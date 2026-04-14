@@ -3,6 +3,8 @@ name = "istool-py"
 version = "0.1.0"
 description = "Python wrapper for IBM istool CLI."
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENCE"]
 authors = [
     { name = "Leyton Addison-Roach", email = "git@laddisonroach.com" }
 ]
