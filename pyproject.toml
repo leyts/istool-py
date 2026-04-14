@@ -9,7 +9,12 @@ authors = [
     { name = "Leyton Addison-Roach", email = "git@laddisonroach.com" }
 ]
 requires-python = ">=3.14"
+keywords = ["ibm", "cli"]
 dependencies = []
+
+[project.urls]
+Repository = "https://github.com/leyts/istool-py"
+Issues = "https://github.com/leyts/istool-py/issues"
 
 [dependency-groups]
 dev = [
