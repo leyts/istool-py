@@ -16,6 +16,20 @@ from istool_py._exceptions import (
 )
 from istool_py._runner import CommandResult
 
+EXPECTED_EXIT_CODE_MAP: dict[int, type[IstoolRunError]] = {
+    1: IstoolWarning,
+    2: IstoolPartialFailure,
+    3: IstoolOperationFailed,
+    4: IstoolPreviewFailed,
+    5: IstoolInvalidArchive,
+    6: IstoolOptionsFileError,
+    7: IstoolResponseFileError,
+    8: IstoolResponseFileError,
+    9: IstoolResponseFileError,
+    10: IstoolConnectionError,
+    11: IstoolSyntaxError,
+}
+
 
 def _result(returncode: int) -> CommandResult:
     return CommandResult(
@@ -29,19 +43,7 @@ def _result(returncode: int) -> CommandResult:
 
 @pytest.mark.parametrize(
     ("code", "exc_type"),
-    [
-        (1, IstoolWarning),
-        (2, IstoolPartialFailure),
-        (3, IstoolOperationFailed),
-        (4, IstoolPreviewFailed),
-        (5, IstoolInvalidArchive),
-        (6, IstoolOptionsFileError),
-        (7, IstoolResponseFileError),
-        (8, IstoolResponseFileError),
-        (9, IstoolResponseFileError),
-        (10, IstoolConnectionError),
-        (11, IstoolSyntaxError),
-    ],
+    list(EXPECTED_EXIT_CODE_MAP.items()),
 )
 def test_raise_if_failed_maps_exit_code_to_subclass(
     code: int, exc_type: type[IstoolRunError]
@@ -65,19 +67,7 @@ def test_raise_if_failed_unknown_code_raises_base() -> None:
 
 
 def test_registry_maps_all_documented_exit_codes() -> None:
-    assert IstoolRunError._registry == {
-        1: IstoolWarning,
-        2: IstoolPartialFailure,
-        3: IstoolOperationFailed,
-        4: IstoolPreviewFailed,
-        5: IstoolInvalidArchive,
-        6: IstoolOptionsFileError,
-        7: IstoolResponseFileError,
-        8: IstoolResponseFileError,
-        9: IstoolResponseFileError,
-        10: IstoolConnectionError,
-        11: IstoolSyntaxError,
-    }
+    assert IstoolRunError._registry == EXPECTED_EXIT_CODE_MAP
 
 
 def test_registry_rejects_duplicate_exit_codes() -> None:
