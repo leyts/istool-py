@@ -38,13 +38,14 @@ class ImportCommand(Command):
             raise CommandValidationError(msg)
 
     def _command_args(self) -> tuple[str, ...]:
-        args: list[str] = ["-archive", str(self.archive)]
+        args: list[str] = []
         if self.preview:
             args.append("-preview")
         if self.replace_existing:
             args.append("-replace")
         if self.abort_after_errors is not None:
             args.extend(("-abortAfter", str(self.abort_after_errors)))
+        args.extend(("-archive", str(self.archive)))
         for sel in self._selections:
             args.extend(sel.to_args())
         return tuple(args)
@@ -58,8 +59,5 @@ class DataStageImportSelection(AssetSelection):
     design_objects: bool = True
 
     def _selection_args(self) -> tuple[str, ...]:
-        args: list[str] = []
-        if not self.design_objects:
-            args.append("-nodesign")
-        args.append(f"{self.server}/{self.project}")
-        return tuple(args)
+        path = f"{self.server}/{self.project}"
+        return ("-nodesign", path) if not self.design_objects else (path,)

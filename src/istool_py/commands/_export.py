@@ -45,11 +45,12 @@ class ExportCommand(Command):
             raise CommandValidationError(msg)
 
     def _command_args(self) -> tuple[str, ...]:
-        args: list[str] = ["-archive", str(self.archive)]
+        args: list[str] = []
         if self.mode == "update":
             args.append("-updatearchive")
         if self.abort_after_errors is not None:
             args.extend(("-abortIfError", str(self.abort_after_errors)))
+        args.extend(("-archive", str(self.archive)))
         for sel in self._selections:
             args.extend(sel.to_args())
         return tuple(args)
@@ -79,5 +80,4 @@ class DataStageExportSelection(AssetSelection):
             args.append("-nodesign")
         if self.executables:
             args.append("-includeexecutable")
-        args.extend(self.paths)
-        return tuple(args)
+        return (*args, *self.paths)
