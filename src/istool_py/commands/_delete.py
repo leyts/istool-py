@@ -45,7 +45,7 @@ class DeleteCommand(Command):
             args.extend(("-abortIfError", str(self.abort_after_errors)))
         for sel in self._selections:
             args.extend(sel.to_args())
-        return tuple(args)
+        return ("-noprompt", *args)
 
 
 @dataclass(frozen=True, slots=True)
