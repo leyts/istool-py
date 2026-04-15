@@ -55,7 +55,7 @@ class IstoolRunError(IstoolError):
 
     @classmethod
     def raise_if_failed(cls, result: CommandResult) -> None:
-        """Raise the matching subclass for result.returncode, pass on 0."""
+        """Raise the matching subclass for ``result.returncode``, pass on 0."""
         rc = result.returncode
         if rc == 0:
             return
