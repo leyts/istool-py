@@ -16,14 +16,14 @@ class ImportCommand(Command):
 
     def datastage(
         self,
+        server: str,
         project: str,
         *,
-        server: str | None = None,
         include_design: bool = True,
     ) -> Self:
         sel = DataStageImportSelection(
-            project=project,
             server=server,
+            project=project,
             include_design=include_design,
         )
         return replace(self, _selections=(*self._selections, sel))
@@ -49,18 +49,13 @@ class ImportCommand(Command):
 @dataclass(frozen=True, slots=True)
 class DataStageImportSelection(AssetSelection):
     _asset_flag: ClassVar[str] = "-datastage"
+    server: str
     project: str
-    server: str | None = None
     include_design: bool = True
 
     def _selection_args(self) -> tuple[str, ...]:
         args: list[str] = []
         if not self.include_design:
             args.append("-nodesign")
-        target = (
-            f"{self.server}/{self.project}"
-            if self.server is not None
-            else self.project
-        )
-        args.append(target)
+        args.append(f"{self.server}/{self.project}")
         return tuple(args)

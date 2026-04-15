@@ -31,33 +31,26 @@ def _new(
 
 
 def test_defaults_emit_neither_preview_nor_replace(tmp_path: Path) -> None:
-    cmd = _new(tmp_path).datastage(project="proj")
+    cmd = _new(tmp_path).datastage(server="srv", project="proj")
     args = cmd.to_args()
     assert "-preview" not in args
     assert "-replace" not in args
 
 
 def test_preview_emits_flag(tmp_path: Path) -> None:
-    cmd = _new(tmp_path, preview=True).datastage(project="proj")
+    cmd = _new(tmp_path, preview=True).datastage(server="srv", project="proj")
     assert "-preview" in cmd.to_args()
 
 
 def test_replace_existing_emits_flag(tmp_path: Path) -> None:
-    cmd = _new(tmp_path, replace_existing=True).datastage(project="proj")
+    cmd = _new(tmp_path, replace_existing=True).datastage(
+        server="srv", project="proj"
+    )
     assert "-replace" in cmd.to_args()
 
 
-def test_datastage_emits_project_only_when_no_server(tmp_path: Path) -> None:
-    cmd = _new(tmp_path).datastage(project="proj")
-    idx = cmd.to_args().index("-datastage")
-    inner = shlex.split(cmd.to_args()[idx + 1])
-    assert inner == ["proj"]
-
-
-def test_datastage_emits_server_slash_project_when_server_set(
-    tmp_path: Path,
-) -> None:
-    cmd = _new(tmp_path).datastage(project="proj", server="srv")
+def test_datastage_emits_server_slash_project(tmp_path: Path) -> None:
+    cmd = _new(tmp_path).datastage(server="srv", project="proj")
     idx = cmd.to_args().index("-datastage")
     inner = shlex.split(cmd.to_args()[idx + 1])
     assert inner == ["srv/proj"]
@@ -66,10 +59,12 @@ def test_datastage_emits_server_slash_project_when_server_set(
 def test_datastage_emits_nodesign_when_include_design_false(
     tmp_path: Path,
 ) -> None:
-    cmd = _new(tmp_path).datastage(project="proj", include_design=False)
+    cmd = _new(tmp_path).datastage(
+        server="srv", project="proj", include_design=False
+    )
     idx = cmd.to_args().index("-datastage")
     inner = shlex.split(cmd.to_args()[idx + 1])
-    assert inner == ["-nodesign", "proj"]
+    assert inner == ["-nodesign", "srv/proj"]
 
 
 def test_validate_requires_selection(tmp_path: Path) -> None:
