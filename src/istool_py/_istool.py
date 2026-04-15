@@ -55,10 +55,9 @@ class Istool:
             extra_args=tuple(extra_args),
         )
 
-    def raw(self, *args: str, extra_args: Sequence[str] = ()) -> RawCommand:
+    def raw(self, *args: str) -> RawCommand:
         return RawCommand(
             _config=self._config,
             _runner=self._runner,
             argv=args,
-            extra_args=tuple(extra_args),
         )
