@@ -68,10 +68,3 @@ def test_raise_if_failed_unknown_code_raises_base() -> None:
 
 def test_registry_maps_all_documented_exit_codes() -> None:
     assert IstoolRunError._registry == EXPECTED_EXIT_CODE_MAP
-
-
-def test_registry_rejects_duplicate_exit_codes() -> None:
-    with pytest.raises(RuntimeError, match="already registered"):
-
-        class _Dup(IstoolRunError, exit_codes=1):  # noqa: N818
-            pass

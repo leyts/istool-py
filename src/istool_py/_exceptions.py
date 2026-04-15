@@ -38,11 +38,6 @@ class IstoolRunError(IstoolError):
             return
         codes = (exit_codes,) if isinstance(exit_codes, int) else exit_codes
         for code in codes:
-            if code in cls._registry:
-                owner = cls._registry[code].__name__
-                msg = f"exit code {code} already registered to {owner}"
-                raise RuntimeError(msg)
-        for code in codes:
             cls._registry[code] = cls
 
     def __init__(self, result: CommandResult) -> None:
