@@ -60,6 +60,36 @@ def test_datastage_nested_token_is_single_argv_entry(tmp_path: Path) -> None:
     assert decoded == ["-includedependent", "/DS1/Jobs/A", "/DS1/Jobs/B"]
 
 
+def test_datastage_path_with_whitespace_is_double_quoted(
+    tmp_path: Path,
+) -> None:
+    cmd = _new(tmp_path).datastage(paths=["/DEV/Jobs/User Folders/job"])
+    idx = cmd.to_args().index("-datastage")
+    inner = cmd.to_args()[idx + 1]
+    assert inner == '"/DEV/Jobs/User Folders/job"'
+
+
+def test_datastage_path_with_embedded_double_quote_is_escaped(
+    tmp_path: Path,
+) -> None:
+    cmd = _new(tmp_path).datastage(paths=['/DEV/Jobs/x"folder/job'])
+    idx = cmd.to_args().index("-datastage")
+    inner = cmd.to_args()[idx + 1]
+    assert inner == '"/DEV/Jobs/x\\"folder/job"'
+
+
+def test_render_matches_istool_quoting_for_path_with_whitespace(
+    tmp_path: Path,
+) -> None:
+    cmd = _new(tmp_path).datastage(
+        paths=["/DEV/Jobs/User Folders/user/JSON_test"]
+    )
+    rendered = cmd.render()
+    assert (
+        " -datastage '\"/DEV/Jobs/User Folders/user/JSON_test\"'" in rendered
+    )
+
+
 def test_no_design_flag_emitted_when_include_design_false(
     tmp_path: Path,
 ) -> None:

@@ -74,7 +74,7 @@ def test_end_to_end_export_argv_matches_expected_shape(
         "-archive",
         "pkg.isx",
         "-datastage",
-        "-includedependent '/DS1/Jobs/Daily/*'",
+        "-includedependent /DS1/Jobs/Daily/*",
     ]
 
 

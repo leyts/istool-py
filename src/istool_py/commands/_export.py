@@ -1,15 +1,12 @@
-import shlex
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar, Literal, Self
 
 from istool_py._exceptions import CommandValidationError
-from istool_py.commands._base import Command
+from istool_py.commands._base import AssetSelection, Command
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-
-    from istool_py.commands._base import Selection
 
 
 type ArchiveMode = Literal["overwrite", "update"]
@@ -18,7 +15,7 @@ type ArchiveMode = Literal["overwrite", "update"]
 @dataclass(frozen=True, slots=True)
 class ExportCommand(Command):
     _command_parts: ClassVar[tuple[str, ...]] = ("export",)
-    _selections: tuple[Selection, ...] = ()
+    _selections: tuple[AssetSelection, ...] = ()
     archive: Path = Path()
     mode: ArchiveMode = "overwrite"
 
@@ -55,7 +52,8 @@ class ExportCommand(Command):
 
 
 @dataclass(frozen=True, slots=True)
-class DataStageExportSelection:
+class DataStageExportSelection(AssetSelection):
+    _asset_flag: ClassVar[str] = "-datastage"
     paths: tuple[str, ...]
     include_dependent: bool = False
     include_design: bool = True
@@ -69,13 +67,13 @@ class DataStageExportSelection:
             msg = "DataStage export paths must be non-empty"
             raise CommandValidationError(msg)
 
-    def to_args(self) -> tuple[str, ...]:
-        inner: list[str] = []
+    def _selection_args(self) -> tuple[str, ...]:
+        args: list[str] = []
         if self.include_dependent:
-            inner.append("-includedependent")
+            args.append("-includedependent")
         if not self.include_design:
-            inner.append("-nodesign")
+            args.append("-nodesign")
         if self.include_executable:
-            inner.append("-includeexecutable")
-        inner.extend(self.paths)
-        return ("-datastage", shlex.join(inner))
+            args.append("-includeexecutable")
+        args.extend(self.paths)
+        return tuple(args)

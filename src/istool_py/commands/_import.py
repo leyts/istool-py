@@ -1,19 +1,15 @@
-import shlex
 from dataclasses import dataclass, replace
 from pathlib import Path
-from typing import TYPE_CHECKING, ClassVar, Self
+from typing import ClassVar, Self
 
 from istool_py._exceptions import CommandValidationError
-from istool_py.commands._base import Command
-
-if TYPE_CHECKING:
-    from istool_py.commands._base import Selection
+from istool_py.commands._base import AssetSelection, Command
 
 
 @dataclass(frozen=True, slots=True)
 class ImportCommand(Command):
     _command_parts: ClassVar[tuple[str, ...]] = ("import",)
-    _selections: tuple[Selection, ...] = ()
+    _selections: tuple[AssetSelection, ...] = ()
     archive: Path = Path()
     preview: bool = False
     replace_existing: bool = False
@@ -51,21 +47,20 @@ class ImportCommand(Command):
 
 
 @dataclass(frozen=True, slots=True)
-class DataStageImportSelection:
+class DataStageImportSelection(AssetSelection):
+    _asset_flag: ClassVar[str] = "-datastage"
     project: str
     server: str | None = None
     include_design: bool = True
 
-    def validate(self) -> None: ...
-
-    def to_args(self) -> tuple[str, ...]:
-        inner: list[str] = []
+    def _selection_args(self) -> tuple[str, ...]:
+        args: list[str] = []
         if not self.include_design:
-            inner.append("-nodesign")
+            args.append("-nodesign")
         target = (
             f"{self.server}/{self.project}"
             if self.server is not None
             else self.project
         )
-        inner.append(target)
-        return ("-datastage", shlex.join(inner))
+        args.append(target)
+        return tuple(args)
