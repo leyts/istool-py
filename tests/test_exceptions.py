@@ -43,24 +43,24 @@ def _result(returncode: int) -> CommandResult:
         (11, IstoolSyntaxError),
     ],
 )
-def test_raise_for_maps_exit_code_to_subclass(
+def test_raise_if_failed_maps_exit_code_to_subclass(
     code: int, exc_type: type[IstoolRunError]
 ) -> None:
     result = _result(code)
     with pytest.raises(exc_type) as excinfo:
-        IstoolRunError.raise_for(result)
+        IstoolRunError.raise_if_failed(result)
     assert excinfo.value.result is result
 
 
-def test_raise_for_zero_is_noop() -> None:
+def test_raise_if_failed_zero_is_noop() -> None:
     result = _result(0)
-    IstoolRunError.raise_for(result)
+    IstoolRunError.raise_if_failed(result)
 
 
-def test_raise_for_unknown_code_raises_base() -> None:
+def test_raise_if_failed_unknown_code_raises_base() -> None:
     result = _result(99)
     with pytest.raises(IstoolRunError) as excinfo:
-        IstoolRunError.raise_for(result)
+        IstoolRunError.raise_if_failed(result)
     assert type(excinfo.value) is IstoolRunError
 
 

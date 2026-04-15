@@ -41,7 +41,7 @@ class Command:
 
     def run(self) -> CommandResult:
         result = self._runner.run(self.to_args())
-        IstoolRunError.raise_for(result)
+        IstoolRunError.raise_if_failed(result)
         return result
 
     def _command_args(self) -> tuple[str, ...]:
