@@ -18,6 +18,7 @@ class ExportCommand(Command):
     _selections: tuple[AssetSelection, ...] = ()
     archive: Path = Path()
     mode: ArchiveMode = "overwrite"
+    abort_after_errors: int | None = None
 
     def datastage(
         self,
@@ -39,6 +40,9 @@ class ExportCommand(Command):
         if not self._selections:
             msg = "export requires at least one asset selection"
             raise CommandValidationError(msg)
+        if self.abort_after_errors is not None and self.abort_after_errors < 1:
+            msg = "abort_after_errors must be a positive integer"
+            raise CommandValidationError(msg)
         for sel in self._selections:
             sel.validate()
 
@@ -46,6 +50,8 @@ class ExportCommand(Command):
         args: list[str] = ["-archive", str(self.archive)]
         if self.mode == "update":
             args.append("-updatearchive")
+        if self.abort_after_errors is not None:
+            args.extend(("-abortIfError", str(self.abort_after_errors)))
         for sel in self._selections:
             args.extend(sel.to_args())
         return tuple(args)

@@ -13,6 +13,7 @@ class ImportCommand(Command):
     archive: Path = Path()
     preview: bool = False
     replace_existing: bool = False
+    abort_after_errors: int | None = None
 
     def datastage(
         self,
@@ -32,6 +33,9 @@ class ImportCommand(Command):
         if not self._selections:
             msg = "import requires at least one asset selection"
             raise CommandValidationError(msg)
+        if self.abort_after_errors is not None and self.abort_after_errors < 1:
+            msg = "abort_after_errors must be a positive integer"
+            raise CommandValidationError(msg)
         for sel in self._selections:
             sel.validate()
 
@@ -41,6 +45,8 @@ class ImportCommand(Command):
             args.append("-preview")
         if self.replace_existing:
             args.append("-replace")
+        if self.abort_after_errors is not None:
+            args.extend(("-abortAfter", str(self.abort_after_errors)))
         for sel in self._selections:
             args.extend(sel.to_args())
         return tuple(args)

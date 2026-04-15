@@ -25,6 +25,7 @@ def _new(
     *,
     mode: ArchiveMode = "overwrite",
     extra_args: tuple[str, ...] = (),
+    abort_after_errors: int | None = None,
 ) -> ExportCommand:
     return ExportCommand(
         _config=IstoolConfig(executable=_exe(tmp_path)),
@@ -32,6 +33,7 @@ def _new(
         archive=Path("pkg.isx"),
         mode=mode,
         extra_args=extra_args,
+        abort_after_errors=abort_after_errors,
     )
 
 
@@ -129,6 +131,33 @@ def test_selection_validates_standalone() -> None:
     sel = DataStageExportSelection(paths=())
     with pytest.raises(CommandValidationError):
         sel.validate()
+
+
+def test_abort_after_errors_omitted_by_default(tmp_path: Path) -> None:
+    cmd = _new(tmp_path).datastage(paths=["/A"])
+    assert "-abortIfError" not in cmd.to_args()
+
+
+def test_abort_after_errors_emits_flag_and_value(tmp_path: Path) -> None:
+    cmd = _new(tmp_path, abort_after_errors=5).datastage(paths=["/A"])
+    args = cmd.to_args()
+    idx = args.index("-abortIfError")
+    assert args[idx + 1] == "5"
+
+
+def test_abort_after_errors_emitted_before_selections(tmp_path: Path) -> None:
+    cmd = _new(tmp_path, abort_after_errors=3).datastage(paths=["/A"])
+    args = cmd.to_args()
+    assert args.index("-abortIfError") < args.index("-datastage")
+
+
+@pytest.mark.parametrize("value", [0, -1])
+def test_abort_after_errors_rejects_non_positive(
+    tmp_path: Path, value: int
+) -> None:
+    cmd = _new(tmp_path, abort_after_errors=value).datastage(paths=["/A"])
+    with pytest.raises(CommandValidationError):
+        cmd.to_args()
 
 
 def test_extra_args_trail_after_structured(tmp_path: Path) -> None:
