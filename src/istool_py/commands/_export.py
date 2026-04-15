@@ -43,8 +43,6 @@ class ExportCommand(Command):
         if self.abort_after_errors is not None and self.abort_after_errors < 1:
             msg = "abort_after_errors must be a positive integer"
             raise CommandValidationError(msg)
-        for sel in self._selections:
-            sel.validate()
 
     def _command_args(self) -> tuple[str, ...]:
         args: list[str] = ["-archive", str(self.archive)]

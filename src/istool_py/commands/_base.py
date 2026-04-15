@@ -35,6 +35,7 @@ class AssetSelection:
         """Override in subclasses; raise on invalid state."""
 
     def to_args(self) -> tuple[str, ...]:
+        self.validate()
         return (self._asset_flag, istool_join(self._selection_args()))
 
     def _selection_args(self) -> tuple[str, ...]:
