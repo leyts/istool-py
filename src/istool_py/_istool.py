@@ -4,6 +4,7 @@ from istool_py._config import IstoolConfig
 from istool_py._runner import Runner
 from istool_py.commands import (
     ArchiveMode,
+    DeleteCommand,
     ExportCommand,
     ImportCommand,
     RawCommand,
@@ -53,6 +54,13 @@ class Istool:
             preview=preview,
             replace_existing=replace_existing,
             extra_args=tuple(extra_args),
+        )
+
+    def delete(self, abort_after_errors: int | None = None) -> DeleteCommand:
+        return DeleteCommand(
+            _config=self._config,
+            _runner=self._runner,
+            abort_after_errors=abort_after_errors,
         )
 
     def raw(self, *args: str, extra_args: Sequence[str] = ()) -> RawCommand:
