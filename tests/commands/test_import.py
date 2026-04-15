@@ -58,11 +58,11 @@ def test_datastage_emits_server_slash_project(tmp_path: Path) -> None:
     assert inner == ["srv/proj"]
 
 
-def test_datastage_emits_nodesign_when_include_design_false(
+def test_datastage_emits_nodesign_when_design_objects_false(
     tmp_path: Path,
 ) -> None:
     cmd = _new(tmp_path).datastage(
-        server="srv", project="proj", include_design=False
+        server="srv", project="proj", design_objects=False
     )
     idx = cmd.to_args().index("-datastage")
     inner = shlex.split(cmd.to_args()[idx + 1])

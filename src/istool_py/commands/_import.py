@@ -20,12 +20,12 @@ class ImportCommand(Command):
         server: str,
         project: str,
         *,
-        include_design: bool = True,
+        design_objects: bool = True,
     ) -> Self:
         sel = DataStageImportSelection(
             server=server,
             project=project,
-            include_design=include_design,
+            design_objects=design_objects,
         )
         return replace(self, _selections=(*self._selections, sel))
 
@@ -57,11 +57,11 @@ class DataStageImportSelection(AssetSelection):
     _asset_flag: ClassVar[str] = "-datastage"
     server: str
     project: str
-    include_design: bool = True
+    design_objects: bool = True
 
     def _selection_args(self) -> tuple[str, ...]:
         args: list[str] = []
-        if not self.include_design:
+        if not self.design_objects:
             args.append("-nodesign")
         args.append(f"{self.server}/{self.project}")
         return tuple(args)

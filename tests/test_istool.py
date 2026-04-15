@@ -63,7 +63,7 @@ def test_end_to_end_export_argv_matches_expected_shape(
     istool = Istool(executable=fake_istool, verbose=True)
     cmd = istool.export(archive=Path("pkg.isx")).datastage(
         paths=["/DS1/Jobs/Daily/*"],
-        include_dependent=True,
+        dependencies=True,
     )
     result = cmd.run()
     echoed = result.stdout.splitlines()[0].removeprefix("argv: ")

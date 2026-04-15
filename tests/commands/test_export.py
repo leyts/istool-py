@@ -53,7 +53,7 @@ def test_update_mode_emits_updatearchive(tmp_path: Path) -> None:
 def test_datastage_nested_token_is_single_argv_entry(tmp_path: Path) -> None:
     cmd = _new(tmp_path).datastage(
         paths=["/DS1/Jobs/A", "/DS1/Jobs/B"],
-        include_dependent=True,
+        dependencies=True,
     )
     args = cmd.to_args()
     idx = args.index("-datastage")
@@ -92,10 +92,10 @@ def test_render_matches_istool_quoting_for_path_with_whitespace(
     )
 
 
-def test_no_design_flag_emitted_when_include_design_false(
+def test_no_design_flag_emitted_when_design_objects_false(
     tmp_path: Path,
 ) -> None:
-    cmd = _new(tmp_path).datastage(paths=["/DS1/Jobs/*"], include_design=False)
+    cmd = _new(tmp_path).datastage(paths=["/DS1/Jobs/*"], design_objects=False)
     idx = cmd.to_args().index("-datastage")
     inner = shlex.split(cmd.to_args()[idx + 1])
     assert "-nodesign" in inner

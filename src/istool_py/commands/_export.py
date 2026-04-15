@@ -24,15 +24,15 @@ class ExportCommand(Command):
         self,
         paths: Sequence[str],
         *,
-        include_dependent: bool = False,
-        include_design: bool = True,
-        include_executable: bool = False,
+        dependencies: bool = False,
+        design_objects: bool = True,
+        executables: bool = False,
     ) -> Self:
         sel = DataStageExportSelection(
             paths=tuple(paths),
-            include_dependent=include_dependent,
-            include_design=include_design,
-            include_executable=include_executable,
+            dependencies=dependencies,
+            design_objects=design_objects,
+            executables=executables,
         )
         return replace(self, _selections=(*self._selections, sel))
 
@@ -61,9 +61,9 @@ class ExportCommand(Command):
 class DataStageExportSelection(AssetSelection):
     _asset_flag: ClassVar[str] = "-datastage"
     paths: tuple[str, ...]
-    include_dependent: bool = False
-    include_design: bool = True
-    include_executable: bool = False
+    dependencies: bool = False
+    design_objects: bool = True
+    executables: bool = False
 
     def validate(self) -> None:
         if not self.paths:
@@ -75,11 +75,11 @@ class DataStageExportSelection(AssetSelection):
 
     def _selection_args(self) -> tuple[str, ...]:
         args: list[str] = []
-        if self.include_dependent:
+        if self.dependencies:
             args.append("-includedependent")
-        if not self.include_design:
+        if not self.design_objects:
             args.append("-nodesign")
-        if self.include_executable:
+        if self.executables:
             args.append("-includeexecutable")
         args.extend(self.paths)
         return tuple(args)
