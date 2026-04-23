@@ -19,13 +19,13 @@ class DeleteCommand(Command):
         server: str,
         project: str,
         folders: Sequence[str],
-        asset_name: str,
+        name: str,
     ) -> Self:
         sel = DataStageDeleteSelection(
             server=server,
             project=project,
             folders=tuple(folders),
-            asset_name=asset_name,
+            name=name,
         )
         return replace(self, _selections=(*self._selections, sel))
 
@@ -54,7 +54,7 @@ class DataStageDeleteSelection(AssetSelection):
     server: str
     project: str
     folders: tuple[str, ...]
-    asset_name: str
+    name: str
 
     def _selection_args(self) -> tuple[str, ...]:
         path = "/".join(
@@ -62,7 +62,7 @@ class DataStageDeleteSelection(AssetSelection):
                 self.server,
                 self.project,
                 *self.folders,
-                self.asset_name,
+                self.name,
             )
         )
         return (path,)
