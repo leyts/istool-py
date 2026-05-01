@@ -1,7 +1,6 @@
 # istool-py
 
 ![PyPI - Version](https://img.shields.io/pypi/v/istool-py)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/istool-py)
 ![PyPI - License](https://img.shields.io/pypi/l/istool-py)
 
 > [!WARNING]
