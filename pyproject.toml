@@ -3,24 +3,24 @@ name = "istool-py"
 version = "0.3.0"
 description = "Python wrapper for IBM istool CLI."
 readme = "README.md"
+requires-python = ">=3.14"
 license = "MIT"
 license-files = ["LICENCE"]
 authors = [
-    { name = "Leyton Addison-Roach", email = "git@laddisonroach.com" }
+  { name = "Leyton Addison-Roach", email = "git@laddisonroach.com" },
 ]
-requires-python = ">=3.14"
-keywords = ["ibm", "cli"]
+keywords = ["cli", "ibm"]
 dependencies = []
 
 [project.urls]
-Repository = "https://github.com/leyts/istool-py"
 Issues = "https://github.com/leyts/istool-py/issues"
+Repository = "https://github.com/leyts/istool-py"
 
 [dependency-groups]
 dev = [
-    "pytest>=9.0.3",
-    "ruff>=0.15.10",
-    "ty>=0.0.30",
+  "pytest>=9.0.3",
+  "ruff>=0.15.10",
+  "ty>=0.0.30",
 ]
 
 [build-system]
@@ -28,45 +28,44 @@ requires = ["uv_build>=0.11.6,<0.12.0"]
 build-backend = "uv_build"
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
 markers = [
-    "real_istool: hits a real istool binary; skipped unless ISTOOL_PY_RUN_REAL=1",
+  "real_istool: hits a real istool binary; skipped unless ISTOOL_PY_RUN_REAL=1"
 ]
+testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 79
 
 [tool.ruff.format]
 docstring-code-format = true
-docstring-code-line-length = 20
 
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "W191",
-    "E111",
-    "E114",
-    "E117",
-    "D206",
-    "D300",
-    "Q000",
-    "Q001",
-    "Q002",
-    "Q003",
-    "Q004",
-    "COM812",
-    "COM819",
+  "W191",
+  "E111",
+  "E114",
+  "E117",
+  "D206",
+  "D300",
+  "Q000",
+  "Q001",
+  "Q002",
+  "Q003",
+  "Q004",
+  "COM812",
+  "COM819",
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
-    "D100",     # Missing docstring in public module
-    "D103",     # Missing docstring in public function
-    "D104",     # Missing docstring in public package
-    "PLR2004",  # Magic values in assertions
-    "S101",     # Assert is the test harness
-    "S106",     # Hardcoded passwords in fixtures
-    "SLF001",   # Private-member access is fine in tests
+  "D100",  # Missing docstring in public module
+  "D103",  # Missing docstring in public function
+  "D104",  # Missing docstring in public package
+  "PLR2004",  # Magic values in assertions
+  "S101",  # Assert is the test harness
+  "S106",  # Hardcoded passwords in fixtures
+  "SLF001",  # Private-member access is fine in tests
 ]
 
 [tool.ruff.lint.pydocstyle]
